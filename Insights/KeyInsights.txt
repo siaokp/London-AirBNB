@@ -1,0 +1,152 @@
+========================================================================
+LONDON AIRBNB — READER CONTEXT (WHAT NUMBERS MEAN)
+========================================================================
+- Price column detected: 'price'
+- Neighbourhood column detected: 'neighbourhood'
+- Room type column detected: 'room_type'
+
+PRICE UNIT (WHAT THE '£' BUYS):
+- Most Airbnb listing datasets store 'price' as the nightly listed price (cost for ONE NIGHT).
+- In this script, we interpret 'price' as the LISTED UNIT PRICE for a stay period,
+  and we label outputs as 'per-night' where that is the standard assumption.
+
+WHAT PRICE TYPICALLY EXCLUDES (IMPORTANT):
+- Cleaning fees, Airbnb service fees, taxes, deposits, discounts, and extra-guest fees
+  are often stored in separate fields (or not present at all).
+- So: '£X' here usually means the base listing price, NOT the final checkout total.
+
+AVAILABILITY_365 (IF PRESENT):
+- 'availability_365' usually means: number of days the listing is available
+  to be booked in the next 365 days (0 = fully booked/unavailable, 365 = wide open).
+  This is *not* the number of days it is occupied; it’s availability, not bookings.
+
+REVIEWS (IF PRESENT):
+- 'number_of_reviews' is typically the total count of guest reviews for the listing.
+  More reviews can indicate popularity, age of listing, or both.
+
+MINIMUM_NIGHTS (IF PRESENT):
+- 'minimum_nights' is the minimum stay length required by the host.
+  Even a low nightly price can imply a high minimum total cost if min nights is high.
+========================================================================
+
+
+========================================================================
+LONDON AIRBNB — 10 KEY QUESTIONS
+========================================================================
+1) What is the typical listing price in London (median / mean / 75th / 95th percentile)?
+2) How many listings are in the dataset, and how many are within the core market (<= £3000)?
+3) Which neighbourhoods are most expensive (by median), and how much more expensive is #1 vs #2?
+4) Which neighbourhoods have the most listings, and what is the typical (median) price in those areas?
+5) How does price differ by room type, and how much more expensive is 'Entire home/apt' than 'Private room'?
+6) What proportion of listings are each room type (market composition)?
+7) Are cheaper listings more popular? (Correlation between price and number of reviews)
+8) Do more available listings tend to be cheaper or more expensive? (Median price by availability bands)
+9) What are the most extreme prices in the data, and how rare are they (top 1%)?
+10) Which features have the most missing data (data quality hotspots)?
+========================================================================
+
+Q1) Typical listing price in London (core market <= £3000):
+    Median listed price is £100 and mean listed price is £165.
+    (Interpreting price as nightly base price unless your dataset states otherwise.)
+    75% of listings are priced at or below £180.
+    95% of listings are priced at or below £482 (top 5% above this).
+    99% of listings are priced at or below £1,570.
+
+    Helpful intuition (IF price is per night):
+    - Median ≈ £100 per night → ≈ £700 per week, ≈ £3,000 per 30-day month.
+
+Q2) Listings count and core-market share:
+    Total listings with a valid positive price: 69,332.
+    Listings in core market (<= £3000): 69,199 (99.81% of priced listings).
+
+Q3) Most expensive neighbourhoods (by median listed price, core market):
+                        Listings  Median (Listed Price)  Mean (Listed Price)
+neighbourhood                                                               
+City of London               422                  196.0           244.018957
+Kensington and Chelsea      4595                  185.0           281.938847
+Westminster                 7722                  178.5           274.218078
+Camden                      4692                  125.0           176.210145
+Hammersmith and Fulham      2985                  111.0           171.623451
+
+    The most expensive neighbourhood by median listed price is 'City of London' at £196 (likely per night).
+    The second is 'Kensington and Chelsea' at £185 (likely per night).
+    'City of London' is £11 more expensive than 'Kensington and Chelsea' by median listed price.
+
+Q4) Neighbourhoods with most listings (core market):
+                        Listings Median Listed Price
+neighbourhood                                       
+Westminster                 7722                £178
+Tower Hamlets               5588                 £85
+Hackney                     5161                 £86
+Camden                      4692                £125
+Kensington and Chelsea      4595                £185
+
+    'Westminster' has the most listings (7,722).
+    Typical listed price there is £178 (median; likely per night).
+
+Q5) Price differences by room type (core market; listed prices):
+                 Listings  Median (Listed Price)  Mean (Listed Price)
+room_type                                                            
+Hotel room            231                  205.0           259.670996
+Entire home/apt     41125                  149.0           211.761581
+Private room        27439                   50.0            95.356172
+Shared room           404                   39.0            66.235149
+
+    Median listed price for 'Entire home/apt' is £149 (likely per night).
+    Median listed price for 'Private room' is £50 (likely per night).
+    'Entire home/apt' is £99 more expensive than 'Private room' by median, which is approximately 198.00% higher.
+    (Remember: this is base listed price — fees/taxes may change checkout totals.)
+
+Q6) Room type market composition (core market):
+                 Listings Share of Listings
+room_type                                  
+Entire home/apt     41125            59.43%
+Private room        27439            39.65%
+Shared room           404             0.58%
+Hotel room            231             0.33%
+
+    The most common room type is 'Entire home/apt', making up 59.43% of core-market listings.
+
+Q7) Are cheaper listings more popular?
+    Correlation between listed price and number of reviews is -0.075.
+    Interpretation guide:
+    - Negative value: cheaper listings tend to have more reviews (weak/strong depending on magnitude).
+    - Positive value: more expensive listings tend to have more reviews.
+    - Near zero: little to no linear relationship.
+    Result suggests little to no linear relationship.
+
+Q8) Median listed price by availability band:
+                       Median Listed Price
+availability_365                          
+0–30 days available                    £80
+31–90 days available                  £115
+91–180 days available                 £140
+181–365 days available                £137
+
+    Highest median listed price band: '91–180 days available' at £140.
+    Lowest median listed price band: '0–30 days available' at £80.
+    Difference between bands: £60 (median listed price; likely per night).
+
+Q9) Extreme prices and rarity (full priced dataset):
+    99th percentile listed price is £1,570.
+    Maximum observed listed price is £25,000.
+    Listings above the 99th percentile: 462 (0.67% of priced listings).
+    (These are often luxury stays, unusual listings, data-entry quirks, or special events.)
+
+Extra Insight) Minimum-stay cost (IF price is per night):
+    Median minimum nights is 2 nights.
+    Median estimated minimum-stay cost is £252 (nightly price × minimum nights).
+    90th percentile minimum-stay cost is £1,650.
+
+Q10) Columns with the most missing data:
+                                Missing Count Missing Share
+neighbourhood_group                     69351       100.00%
+license                                 69351       100.00%
+reviews_per_month                       16780        24.20%
+last_review                             16780        24.20%
+name                                       25         0.04%
+host_name                                   5         0.01%
+calculated_host_listings_count              0         0.00%
+availability_365                            0         0.00%
+id                                          0         0.00%
+host_id                                     0         0.00%

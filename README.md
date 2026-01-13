@@ -1,5 +1,5 @@
 # London AirBnB — Exploratory Data Analysis (Python)
-
+![London AirBnB – Key Charts](Insights/keycharts.png)
 ## Project Context
 This project was completed during **Week 6 (Python – Exploratory Data Analysis)** of the Data Technician Skills Bootcamp, specifically as part of the **Day 4 analytical tasks**.
 
